@@ -31,13 +31,21 @@ function version(bot, config) {
 
   cordlrPlugin(config.version.unknown, p => {
     plugins.push(p);
-    plugins = plugins.map(p => {
-      return pixie.render(config.version.format, p);
-    });
   });
 
   return function run(message, args) {
-    const versions = plugins.join('\n');
+    if (args.length > 0) {
+      const plugin = plugins.filter(p => p.name === args[0]).map(p => {
+        return pixie.render(config.version.format, p);
+      }).join('\n');
+      if (config.version.code) return message.channel.sendCode(null, plugin, {split: true})
+      else message.channel.sendMessage(plugin, {split: true});
+      return;
+    }
+    
+    const versions = plugins.map(p => {
+      return pixie.render(config.version.format, p);
+    }).join('\n');
     if (config.version.code) return message.channel.sendCode(null, versions, {split: true})
     else message.channel.sendMessage(versions, {split: true});
   }
