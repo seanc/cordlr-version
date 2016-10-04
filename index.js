@@ -21,10 +21,18 @@ function version(bot, config) {
   const scripts = config.plugins;
   let plugins = scripts.map(p => {
     const package = require(path.join(path.dirname(resolve(p)), 'package.json'));
+    const author = (function(package) {
+      const author = package.author;
+      if (author.name) {
+        return `${author.name} ${author.url ? `(${author.url})` : ''}`;
+      }
+      return author;
+    })(package);
+    
     return {
-      name: p,
+      name: package.name,
       version: package.version,
-      author: package.author || config.version.unknown,
+      author: author,
       homepage: package.homepage || config.version.unknown
     }
   });
@@ -42,7 +50,7 @@ function version(bot, config) {
       else message.channel.sendMessage(plugin, {split: true});
       return;
     }
-    
+
     const versions = plugins.map(p => {
       return pixie.render(config.version.format, p);
     }).join('\n');
