@@ -19,6 +19,10 @@ const cordlrPlugin = function cordlrVersion(unknown, cb) {
 
 function version(bot, config) {
   const scripts = config.plugins;
+  config = config[version.name] || {};
+  const unknown = config.unknown || 'Unknown';
+  const format = config.format || '{{name}}\n\tAuthor: {{author}}\n\tSource: {{homepage}}\n\tVersion: {{version}}';
+  const code = config.code || true;
   let plugins = scripts.map(p => {
     const package = require(path.join(path.dirname(resolve(p)), 'package.json'));
     const author = (function(package) {
@@ -28,7 +32,7 @@ function version(bot, config) {
       }
       return author;
     })(package);
-    
+
     return {
       name: package.name,
       version: package.version,
