@@ -19,6 +19,10 @@ const cordlrPlugin = function cordlrVersion(unknown, cb) {
 
 function version(bot, config) {
   const scripts = config.plugins;
+  config = config[version.name] || {};
+  const unknown = config.unknown || 'Unknown';
+  const format = config.format || '{{name}}\n\tAuthor: {{author}}\n\tSource: {{homepage}}\n\tVersion: {{version}}';
+  const code = config.code || true;
   let plugins = scripts.map(p => {
     const package = require(path.join(path.dirname(resolve(p)), 'package.json'));
     const author = (function(package) {
@@ -28,33 +32,33 @@ function version(bot, config) {
       }
       return author;
     })(package);
-    
+
     return {
       name: package.name,
       version: package.version,
       author: author,
-      homepage: package.homepage || config.version.unknown
+      homepage: package.homepage || unknown
     }
   });
 
-  cordlrPlugin(config.version.unknown, p => {
+  cordlrPlugin(unknown, p => {
     plugins.push(p);
   });
 
   return function run(message, args) {
     if (args.length > 0) {
       const plugin = plugins.filter(p => p.name === args[0]).map(p => {
-        return pixie.render(config.version.format, p);
+        return pixie.render(format, p);
       }).join('\n');
-      if (config.version.code) return message.channel.sendCode(null, plugin, {split: true})
+      if (code) return message.channel.sendCode(null, plugin, {split: true})
       else message.channel.sendMessage(plugin, {split: true});
       return;
     }
 
     const versions = plugins.map(p => {
-      return pixie.render(config.version.format, p);
+      return pixie.render(format, p);
     }).join('\n');
-    if (config.version.code) return message.channel.sendCode(null, versions, {split: true})
+    if (code) return message.channel.sendCode(null, versions, {split: true})
     else message.channel.sendMessage(versions, {split: true});
   }
 }

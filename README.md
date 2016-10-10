@@ -12,15 +12,15 @@ $ cordlr install cordlr-version
 
 Then add it to your config.
 
-```json
+```js
 {
   "plugins": [
     "cordlr-version"
   ],
   "version": {
-    "unknown": "Unknown",
-    "format": "{{name}}\n\tAuthor: {{author}}\n\tSource: {{homepage}}\n\tVersion: {{version}}",
-    "code": true
+    "unknown": "Unknown", // What should the bot display if it can't find the plugin homepage
+    "format": "{{name}}\n\tAuthor: {{author}}\n\tSource: {{homepage}}\n\tVersion: {{version}}", // How should the list be formatted
+    "code": true // Should the list be sent in a code block
   }
 }
 ```
@@ -28,7 +28,7 @@ Then add it to your config.
 ## Usage
 
 ```
-version
+version [plugin]
 ```
 
 ## License
