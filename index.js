@@ -26,7 +26,7 @@ function version(bot, config) {
   let plugins = scripts.map(p => {
     try { const package = require(path.join(path.dirname(resolve(p)), 'package.json')) }
     catch (e) {}
-    if (!package) return;
+    if (typeof package === 'undefined') return;
 
     const author = (function(package) {
       const author = package.author;
