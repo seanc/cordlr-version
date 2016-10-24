@@ -24,7 +24,9 @@ function version(bot, config) {
   const format = config.format || '{{name}}\n\tAuthor: {{author}}\n\tSource: {{homepage}}\n\tVersion: {{version}}';
   const code = config.code || true;
   let plugins = scripts.map(p => {
-    const package = require(path.join(path.dirname(resolve(p)), 'package.json'));
+    try { const package = require(path.join(path.dirname(resolve(p)), 'package.json')) }
+    catch (e) { return bot.emit('error', e) }
+
     const author = (function(package) {
       const author = package.author;
       if (author.name) {
