@@ -24,9 +24,10 @@ function version(bot, config) {
   const format = config.format || '{{name}}\n\tAuthor: {{author}}\n\tSource: {{homepage}}\n\tVersion: {{version}}';
   const code = config.code || true;
   let plugins = scripts.map(p => {
-    try { const package = require(path.join(path.dirname(resolve(p)), 'package.json')) }
+    let pkg = null;
+    try { pkg = require(path.join(path.dirname(resolve(p)), 'package.json')) }
     catch (e) {}
-    if (typeof package === 'undefined') return;
+    if (!pkg) return;
 
     const author = (function(package) {
       const author = package.author;
@@ -34,13 +35,13 @@ function version(bot, config) {
         return `${author.name} ${author.url ? `(${author.url})` : ''}`;
       }
       return author;
-    })(package);
+    })(pkg);
 
     return {
-      name: package.name,
-      version: package.version,
+      name: pkg.name,
+      version: pkg.version,
       author: author,
-      homepage: package.homepage || unknown
+      homepage: pkg.homepage || unknown
     }
   });
 
